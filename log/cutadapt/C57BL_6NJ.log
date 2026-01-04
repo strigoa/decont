@@ -1,7 +1,7 @@
 This is cutadapt 2.6 with Python 3.7.12
 Command line parameters: -m 18 -a TGGAATTCTCGGGTGCCAAGG --discard-untrimmed -o out/trimmed/C57BL_6NJ.trimmed.fastq.gz out/merged/C57BL_6NJ.fastq.gz
 Processing reads on 1 core in single-end mode ...
-Finished in 2.26 s (11 us/read; 5.30 M reads/minute).
+Finished in 2.23 s (11 us/read; 5.38 M reads/minute).
 
 === Summary ===
 

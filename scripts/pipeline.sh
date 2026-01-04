@@ -18,8 +18,8 @@ do
 done
 
 # Run cutadapt for all merged files
-mkdir -p log/cutadapt
 mkdir -p out/trimmed
+mkdir -p log/cutadapt
 for mergedsample in $(ls out/merged/*.fastq.gz | xargs -n 1 basename | cut -d'.' -f1 | sort | uniq) 
 do
 	echo "Running cutadapt for sample $mergedsample..."
@@ -28,15 +28,15 @@ do
 	out/merged/${mergedsample}.fastq.gz > log/cutadapt/${mergedsample}.log
 done
 
-# TODO: run STAR for all trimmed files
+# Run STAR for all trimmed files
 for fname in out/trimmed/*.fastq.gz
 do
-    # you will need to obtain the sample ID from the filename
-    sid=#TODO
-    # mkdir -p out/star/$sid
-    # STAR --runThreadN 4 --genomeDir res/contaminants_idx \
-    #    --outReadsUnmapped Fastx --readFilesIn <input_file> \
-    #    --readFilesCommand gunzip -c --outFileNamePrefix <output_directory>
+    sid=$(basename "$fname" .trimmed.fastq.gz)
+    mkdir -p out/star/$sid
+    echo "Running STAR alignement for sample $sid..."
+    STAR --runThreadN 4 --genomeDir res/contaminants_idx \
+    --outReadsUnmapped Fastx --readFilesIn "$fname" \
+    --readFilesCommand gunzip -c --outFileNamePrefix out/star/$sid/
 done 
 
 # TODO: create a log file containing information from cutadapt and star logs
@@ -44,4 +44,6 @@ done
 # - cutadapt: Reads with adapters and total basepairs
 # - star: Percentages of uniquely mapped reads, reads mapped to multiple loci, and to too many loci
 # tip: use grep to filter the lines you're interested in
+
+
 
