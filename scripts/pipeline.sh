@@ -39,11 +39,23 @@ do
     --readFilesCommand gunzip -c --outFileNamePrefix out/star/$sid/
 done 
 
-# TODO: create a log file containing information from cutadapt and star logs
-# (this should be a single log file, and information should be *appended* to it on each run)
-# - cutadapt: Reads with adapters and total basepairs
-# - star: Percentages of uniquely mapped reads, reads mapped to multiple loci, and to too many loci
-# tip: use grep to filter the lines you're interested in
-
-
+# Create a log file containing information from cutadapt (reads with adapters and total basepairs processed) and STAR (percentages of uniquely mapped reads, reads mapped to multiple loci, and to too many loci) logs
+echo "Creating a summary log file from cutadapt and STAR..."
+summarylog="log/pipeline.log"
+echo "Date pipeline run: $(date)" >> $summarylog
+echo >> $summarylog
+for sample in $(ls out/star/)
+do
+    echo "Summary for sample $sample" >> $summarylog
+    echo "Cutadapt information: " >> $summarylog
+    grep -E "Reads with adapters|Total basepairs processed"\
+    log/cutadapt/${sample}.log >> $summarylog
+    echo >> $summarylog
+    echo "STAR information: " >> $summarylog
+    grep -E "Uniquely mapped reads %|% of reads mapped to multiple loci|\
+    % of reads mapped to too many loci" out/star/${sample}/Log.final.out >> $summarylog
+    echo >> $summarylog
+done
+echo "-------------------------------------------------------------" >> $summarylog
+echo >> $summarylog
 
