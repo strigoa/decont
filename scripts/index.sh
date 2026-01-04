@@ -1,7 +1,7 @@
 genomefile=$1
 outdir=$2
 
-# Generate directory for the index
+# Generate directory to store the index
 mkdir -p "$outdir"
 
 # Generate index with STAR
