@@ -1,18 +1,32 @@
-# This script should download the file specified in the first argument ($1),
-# place it in the directory specified in the second argument ($2),
-# and *optionally*:
-# - uncompress the downloaded file with gunzip if the third
-#   argument ($3) contains the word "yes"
-# - filter the sequences based on a word contained in their header lines:
-#   sequences containing the specified word in their header should be **excluded**
-#
-# Example of the desired filtering:
-#
-#   > this is my sequence
-#   CACTATGGGAGGACATTATAC
-#   > this is my second sequence
-#   CACTATGGGAGGGAGAGGAGA
-#   > this is another sequence
-#   CCAGGATTTACAGACTTTAAA
-#
-#   If $4 == "another" only the **first two sequence** should be output
+file=$1
+outdir=$2
+uncompress=$3
+filter=$4
+
+# Generate directory to download the file
+mkdir -p "$outdir"
+
+# Download the file from URL and place in the directory
+echo "Downloading file from $file..."
+wget -N -P "$outdir" "$file"
+
+# Get name and path of the downloaded file
+filename=$(basename "$file")
+filepath="$outdir/$filename"
+
+# Uncompress downloaded file? If yes, uncompress and keep the compressed
+if [ "$uncompress" == "yes" ]; then
+	echo "Uncompressing file $filename..."
+	gunzip -f -k "$filepath"
+	filepath="${filepath%.gz}"
+fi
+
+# Filter by word: removing sequences that contain the word in the header
+if [ -n "$filter" ]; then
+	echo "Filtering sequences that contain $filter in the header..."
+	grep -v -i "$filter" "$filepath" > "${filepath}.tmp"
+	mv "${filepath}.tmp" "$filepath"
+fi
+
+echo "Completed. File downloaded at: $filepath"
+
