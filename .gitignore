@@ -1,10 +1,2 @@
-Log.out
-out/*
-!out/.gitkeep
-res/*
-!res/.gitkeep
-data/*
-!data/.gitkeep
-!data/urls
-log/*
-!log/.gitkeep
+data/
+res/
